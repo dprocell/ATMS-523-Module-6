@@ -49,7 +49,7 @@ monthly_tornadoes['Date'] = pd.to_datetime(
 monthly_tornadoes = monthly_tornadoes.set_index('Date')
 monthly_tornadoes = monthly_tornadoes.drop(['year', 'month'], axis=1)
 
-# Create a complete time series and filling months with 0 tornadoes
+# Make a complete time series and filling months with 0 tornadoes
 date_range = pd.date_range(
     start=monthly_tornadoes.index.min(),
     end=monthly_tornadoes.index.max(),
@@ -146,8 +146,6 @@ rf_climate = RandomForestRegressor(
     n_jobs=-1
 )
 rf_climate.fit(X_train_climate, y_train)
-
-# Predictions
 y_pred_climate = rf_climate.predict(X_test_climate)
 
 rmse_climate = np.sqrt(mean_squared_error(y_test, y_pred_climate))
@@ -191,8 +189,8 @@ y_pred_month = rf_month.predict(X_test_month)
 rmse_month = np.sqrt(mean_squared_error(y_test, y_pred_month))
 corr_month = np.corrcoef(y_test, y_pred_month)[0, 1]
 
-print(f"   RMSE for climate and month model: {rmse_month:.3f}")
-print(f"   Correlation coefficient: {corr_month:.3f}")
+print("RMSE for climate and month model:", rmse_month)
+print("Correlation coefficient:", corr_month)
 
 plt.subplot(1, 2, 2)
 plt.scatter(y_test, y_pred_month, alpha=0.5)
@@ -266,7 +264,7 @@ plt.savefig('q6_shap_summary_plot.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # ============================================================================
-# STEP 7: SHAP Feature Dependence for ENSO index
+# STEP 7: SHAP Feature dependence for ENSO index
 # ============================================================================
 
 plt.figure(figsize=(10, 6))
