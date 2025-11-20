@@ -75,12 +75,12 @@ ao = pd.read_csv('https://www.cpc.ncep.noaa.gov/products/precip/CWlink/daily_ao_
 # Process ENSO
 enso_new = pd.DataFrame()
 enso_new['Date'] = pd.date_range(
-    start=datetime(int(enso[0].iloc[0]), 1, 1),
-    end=datetime(int(enso[0].iloc[-1]), 12, 1),
-    freq="MS"
+    start=datetime(int(enso[0].iloc[0]), 1, 1), # first year January
+    end=datetime(int(enso[0].iloc[-1]), 12, 1), # last year December
+    freq="MS"                                   # month start frequency
 )
 enso_new = enso_new.set_index('Date')
-enso_new['ENSO'] = enso.loc[:, 1:].stack().values
+enso_new['ENSO'] = enso.loc[:, 1:].stack().values # pivot columns to rows
 
 # Process NAO
 nao_new = pd.DataFrame()
@@ -140,10 +140,10 @@ X_train_climate, X_test_climate, y_train, y_test = train_test_split(
     X_climate, y, test_size=0.2, random_state=42
 )
 rf_climate = RandomForestRegressor(
-    n_estimators=100,
-    max_depth=10,
-    random_state=42,
-    n_jobs=-1
+    n_estimators=100,   # number of trees in forst
+    max_depth=10,       # how deep each tree can go
+    random_state=42,    # for repoducibility
+    n_jobs=-1           # use all CPU cores
 )
 rf_climate.fit(X_train_climate, y_train)
 y_pred_climate = rf_climate.predict(X_test_climate)
@@ -170,6 +170,8 @@ plt.show()
 # ============================================================================
 
 merged_data['month'] = merged_data.index.month
+# transform categorical data (months) into binary columns
+# prevents model from thinking months 12 is a greater value than month 1
 month_dummies = pd.get_dummies(merged_data['month'], prefix='month')
 X_with_month = pd.concat([X_climate, month_dummies], axis=1)
 X_train_month, X_test_month, y_train, y_test = train_test_split(
